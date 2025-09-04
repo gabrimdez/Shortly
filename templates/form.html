@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shortly</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <script defer src="{{ url_for('static', filename='script.js') }}"></script>
+  </head>
+  <body>
+    <div class="main-center">
+      <main>
+        <h1><span class="icon">🔗</span> Shortly</h1>
+        <form method="post" action="/" class="url-form" novalidate>
+          <label for="url" class="custom-label">Introduce la URL</label>
+          <div class="input-group">
+            <span class="input-icon">🌐</span>
+            <input
+              id="url"
+              type="url"
+              name="url"
+              placeholder="Pega aquí tu enlace largo"
+              required
+              autocomplete="off"
+              class="url-input"
+            />
+            <button type="submit" class="btn-submit">Acortar</button>
+          </div>
+        </form>
+        <div id="message" class="message"></div>
+        {% if new_url %}
+        <section class="result-card">
+          <div class="result">
+            <p>URL acortada:</p>
+            <div class="result-wrapper">
+              <a
+                href="{{ new_url }}"
+                target="_blank"
+                rel="noopener"
+                id="short-url"
+                >{{ new_url }}</a
+              >
+              <button class="btn-copy" id="btn-copy" title="Copiar enlace">
+                📋
+              </button>
+            </div>
+          </div>
+          <div class="contact-links">
+            <a
+              href="https://github.com/gabrimdez"
+              class="contact-btn"
+              target="_blank"
+              rel="noopener"
+            >
+              <span class="contact-icon">🐙</span> GitHub
+            </a>
+            <a
+              href="https://www.linkedin.com/in/gabriel-acevedo-méndez-0582a4382/"
+              class="contact-btn"
+              target="_blank"
+              rel="noopener"
+            >
+              <span class="contact-icon">🔗</span> LinkedIn
+            </a>
+            <div class="contact-btn email-btn">
+              <span class="contact-icon">✉️</span>
+              <span id="user-email">gabrimdez@gmail.com</span>
+              <button
+                class="btn-copy-email"
+                id="btn-copy-email"
+                title="Copiar correo"
+                aria-label="Copiar correo"
+              >
+                📋
+              </button>
+              <button
+                class="btn-send-email"
+                id="btn-send-email"
+                title="Enviar correo"
+                aria-label="Enviar correo"
+              >
+                ✉️
+              </button>
+            </div>
+          </div>
+        </section>
+        {% endif %}
+      </main>
+      <footer>
+        Hecho por <span class="footer-highlight">Gabriel Acevedo</span>
+      </footer>
+    </div>
+  </body>
+</html>
