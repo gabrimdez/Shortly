@@ -17,16 +17,25 @@
   <body>
     <div class="main-center">
       <main>
+        <nav class="auth-nav">
+          {% if current_user.is_authenticated %}
+          <span class="auth-user">👤 {{ current_user.username }}</span>
+          <a href="{{ url_for('logout') }}" class="auth-btn">Cerrar sesión</a>
+          {% else %}
+          <a href="{{ url_for('login') }}" class="auth-btn">Iniciar sesión</a>
+          <a href="{{ url_for('register') }}" class="auth-btn">Registrarse</a>
+          {% endif %}
+        </nav>
+
         <h1><span class="icon">🔗</span> Shortly</h1>
         <form method="post" action="/" class="url-form" novalidate>
           <label for="url" class="custom-label">Introduce la URL</label>
           <div class="input-group">
-            <span class="input-icon">🌐</span>
             <input
               id="url"
               type="url"
               name="url"
-              placeholder="Pega aquí tu enlace largo"
+              placeholder="🌐 Pega aquí tu enlace largo"
               required
               autocomplete="off"
               class="url-input"
@@ -35,61 +44,125 @@
           </div>
         </form>
         <div id="message" class="message"></div>
+
         {% if new_url %}
         <section class="result-card">
-          <div class="result">
-            <p>URL acortada:</p>
-            <div class="result-wrapper">
-              <a
-                href="{{ new_url }}"
-                target="_blank"
-                rel="noopener"
-                id="short-url"
-                >{{ new_url }}</a
-              >
-              <button class="btn-copy" id="btn-copy" title="Copiar enlace">
-                📋
-              </button>
+          <div
+            class="result"
+            style="
+              display: flex;
+              align-items: center;
+              gap: 2rem;
+              flex-wrap: wrap;
+              justify-content: center;
+            "
+          >
+            <div style="flex: 1; min-width: 200px">
+              <p style="font-weight: 700; color: #23272f">URL acortada:</p>
+              <div class="result-wrapper" style="justify-content: flex-start">
+                <a
+                  href="{{ new_url }}"
+                  target="_blank"
+                  rel="noopener"
+                  id="short-url"
+                  >{{ new_url }}</a
+                >
+                <button class="btn-copy" id="btn-copy" title="Copiar enlace">
+                  📋
+                </button>
+              </div>
             </div>
-          </div>
-          <div class="contact-links">
-            <a
-              href="https://github.com/gabrimdez"
-              class="contact-btn"
-              target="_blank"
-              rel="noopener"
+            {% if link and link.qr_filename %}
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
             >
-              <span class="contact-icon">🐙</span> GitHub
-            </a>
-            <a
-              href="https://www.linkedin.com/in/gabriel-acevedo-méndez-0582a4382/"
-              class="contact-btn"
-              target="_blank"
-              rel="noopener"
-            >
-              <span class="contact-icon">🔗</span> LinkedIn
-            </a>
-            <div class="contact-btn email-btn">
-              <span class="contact-icon">✉️</span>
-              <span id="user-email">gabrimdez@gmail.com</span>
-              <button
-                class="btn-copy-email"
-                id="btn-copy-email"
-                title="Copiar correo"
-                aria-label="Copiar correo"
-              >
-                📋
-              </button>
-              <button
-                class="btn-send-email"
-                id="btn-send-email"
-                title="Enviar correo"
-                aria-label="Enviar correo"
-              >
-                ✉️
-              </button>
+              <img
+                src="{{ url_for('static', filename='qrcodes/' ~ link.qr_filename) }}"
+                alt="QR código para {{ new_url }}"
+                width="120"
+                height="120"
+                style="
+                  border-radius: 16px;
+                  box-shadow: 0 2px 14px #1e293b44;
+                  background: white;
+                  padding: 8px;
+                "
+              />
             </div>
+            {% endif %}
           </div>
+        </section>
+        {% endif %}
+
+        <!-- Este bloque siempre visible -->
+        <div class="contact-links">
+          <a
+            href="https://github.com/gabrimdez"
+            class="contact-btn"
+            target="_blank"
+            rel="noopener"
+          >
+            <span class="contact-icon">🐙</span> GitHub
+          </a>
+          <a
+            href="https://www.linkedin.com/in/gabriel-acevedo-méndez-0582a4382/"
+            class="contact-btn"
+            target="_blank"
+            rel="noopener"
+          >
+            <span class="contact-icon">🔗</span> LinkedIn
+          </a>
+          <div class="contact-btn email-btn">
+            <span class="contact-icon">✉️</span>
+            <span id="user-email">gabrimdez@gmail.com</span>
+            <button
+              class="btn-copy-email"
+              id="btn-copy-email"
+              title="Copiar correo"
+              aria-label="Copiar correo"
+            >
+              📋
+            </button>
+            <button
+              class="btn-send-email"
+              id="btn-send-email"
+              title="Enviar correo"
+              aria-label="Enviar correo"
+            >
+              ✉️
+            </button>
+          </div>
+        </div>
+
+        {% if links %}
+        <section class="history">
+          <h2>Historial de enlaces acortados</h2>
+          <ul>
+            {% for link in links %}
+            <li>
+              <a href="{{ link.short_url }}" target="_blank"
+                >{{ link.short_url }}</a
+              >
+              →
+              <a href="{{ link.original_url }}" target="_blank"
+                >{{ link.original_url }}</a
+              >
+              {% if link.qr_filename %}
+              <img
+                src="{{ url_for('static', filename='qrcodes/' ~ link.qr_filename) }}"
+                alt="QR para {{ link.short_url }}"
+                width="64"
+                height="64"
+                style="vertical-align: middle; margin-left: 10px"
+              />
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
         </section>
         {% endif %}
       </main>
